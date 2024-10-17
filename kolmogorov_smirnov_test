@@ -1,0 +1,46 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Función para realizar la prueba KS manualmente
+def kolmogorov_smirnov_test(data):
+    # Ordenar los datos
+    sorted_data = np.sort(data)
+    n = len(sorted_data)
+    
+    # Crear la CDF empírica
+    empirical_cdf = np.arange(1, n + 1) / n
+    
+    # Calcular la CDF teórica para la distribución uniforme
+    theoretical_cdf = sorted_data
+    
+    # Calcular las distancias entre CDF empírica y teórica
+    d_plus = np.max(empirical_cdf - theoretical_cdf)
+    d_minus = np.max(theoretical_cdf - (np.arange(0, n) / n))
+    ks_stat = max(d_plus, d_minus)
+    
+    return ks_stat
+
+# Generar 100 números aleatorios entre 0 y 1
+random_numbers = np.random.uniform(0, 1, 100)
+
+# Realizar la prueba KS manual
+ks_stat = kolmogorov_smirnov_test(random_numbers)
+
+# Mostrar resultados
+print(f"Estadístico KS: {ks_stat}")
+
+# Graficar los números aleatorios generados
+plt.hist(random_numbers, bins=10, edgecolor='black', alpha=0.7)
+plt.title('Histograma de 100 números aleatorios')
+plt.xlabel('Valor')
+plt.ylabel('Frecuencia')
+plt.show()
+
+# Umbral crítico para una muestra de 100 y nivel de significancia de 0.05
+critical_value = 1.36 / np.sqrt(100)
+
+# Interpretación del resultado
+if ks_stat < critical_value:
+    print("No se puede rechazar la hipótesis nula: los datos parecen provenir de una distribución uniforme.")
+else:
+    print("Se rechaza la hipótesis nula: los datos no parecen provenir de una distribución uniforme.")
