@@ -1,0 +1,79 @@
+import matplotlib.pyplot as plt
+
+# Método de Centros al Cuadrado
+def centros_al_cuadrado(seed, n):
+    random_numbers = []
+    num_digits = len(str(seed))
+    
+    for _ in range(n):
+        # Elevar al cuadrado la semilla
+        squared = seed ** 2
+        
+        # Obtener los dígitos centrales
+        squared_str = str(squared).zfill(2 * num_digits)  # Rellenar con ceros si es necesario
+        start = (len(squared_str) - num_digits) // 2
+        seed = int(squared_str[start:start + num_digits])
+        
+        # Guardar el número pseudoaleatorio (escalado entre 0 y 1)
+        random_numbers.append(seed / (10 ** num_digits))
+    
+    return random_numbers
+
+# Método de Medios Cuadrados
+def medios_cuadrados(seed1, seed2, n):
+    random_numbers = []
+    num_digits = len(str(seed1))
+    
+    for _ in range(n):
+        # Multiplicar las dos semillas
+        product = seed1 * seed2
+        
+        # Obtener los dígitos centrales del producto
+        product_str = str(product).zfill(2 * num_digits)  # Rellenar con ceros si es necesario
+        start = (len(product_str) - num_digits) // 2
+        next_seed = int(product_str[start:start + num_digits])
+        
+        # Guardar el número pseudoaleatorio (escalado entre 0 y 1)
+        random_numbers.append(next_seed / (10 ** num_digits))
+        
+        # Actualizar las semillas
+        seed1 = seed2
+        seed2 = next_seed
+    
+    return random_numbers
+
+# Generar 100 números aleatorios usando el método de Centros al Cuadrado
+seed_cuadrado = 1234  # Semilla inicial para centros al cuadrado
+random_centros_cuadrado = centros_al_cuadrado(seed_cuadrado, 100)
+
+# Generar 100 números aleatorios usando el método de Medios Cuadrados
+seed1 = 1234  # Primera semilla para medios cuadrados
+seed2 = 5678  # Segunda semilla para medios cuadrados
+random_medios_cuadrado = medios_cuadrados(seed1, seed2, 100)
+
+# Mostrar los resultados
+print("Números generados por el método de Centros al Cuadrado:")
+print(random_centros_cuadrado)
+
+print("\nNúmeros generados por el método de Medios Cuadrados:")
+print(random_medios_cuadrado)
+
+# Graficar los resultados
+plt.figure(figsize=(10, 5))
+
+# Gráfico para el método de Centros al Cuadrado
+plt.subplot(1, 2, 1)
+plt.plot(random_centros_cuadrado, 'bo-', label='Centros al Cuadrado')
+plt.title('Centros al Cuadrado')
+plt.xlabel('Iteración')
+plt.ylabel('Número aleatorio')
+
+# Gráfico para el método de Medios Cuadrados
+plt.subplot(1, 2, 2)
+plt.plot(random_medios_cuadrado, 'ro-', label='Medios Cuadrados')
+plt.title('Medios Cuadrados')
+plt.xlabel('Iteración')
+plt.ylabel('Número aleatorio')
+
+plt.tight_layout()
+plt.show()
